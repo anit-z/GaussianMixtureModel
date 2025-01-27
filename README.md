@@ -10,9 +10,9 @@ This repository contains an implementation of the **Gaussian Mixture Model (GMM)
 
 ---
 
-## Mathematical Background
+## **Mathematical Background**
 
-### Gaussian Probability Density Function (PDF)
+### **Gaussian Probability Density Function (PDF)**
 
 The Gaussian PDF is given by:
 
@@ -23,19 +23,78 @@ Where:
 - \( \sigma^2 \): Variance of the Gaussian distribution
 - \( x \): Data point
 
-### Expectation-Maximization (EM) Algorithm
+---
 
-The EM algorithm iteratively calculates:
-1. **E-step**: Responsibilities (\( \gamma \)) for each component:
-   $$ \gamma_{nk} = \frac{\omega_k f(x_n | \mu_k, \sigma_k^2)}{\sum_{k'} \omega_{k'} f(x_n | \mu_{k'}, \sigma_{k'}^2)} $$
+### **The Expectation-Maximization (EM) Algorithm**
 
-2. **M-step**: Updates the parameters:
-   - Component weights (\( \omega_k \)):
-     $$ \omega_k = \frac{\sum_n \gamma_{nk}}{N} $$
-   - Means (\( \mu_k \)):
-     $$ \mu_k = \frac{\sum_n \gamma_{nk} x_n}{\sum_n \gamma_{nk}} $$
-   - Variances (\( \sigma_k^2 \)):
-     $$ \sigma_k^2 = \frac{\sum_n \gamma_{nk} (x_n - \mu_k)^2}{\sum_n \gamma_{nk}} $$
+The **EM Algorithm** iteratively optimizes the parameters of the Gaussian Mixture Model through the following steps:
+
+---
+
+### **1. E-Step: Responsibilities (\( \gamma \))**
+
+The responsibilities (\( \gamma_{nk} \)) for each component \( k \) and observation \( x_n \) are calculated as:
+
+$$ \gamma_{nk} = \frac{\omega_k f(x_n | \mu_k, \sigma_k^2)}{\sum_{k'} \omega_{k'} f(x_n | \mu_{k'}, \sigma_{k'}^2)} $$
+
+Where:
+- \( \omega_k \): Weight of component \( k \)
+- \( f(x_n | \mu_k, \sigma_k^2) \): Gaussian PDF for component \( k \)
+
+---
+
+### **2. M-Step: Parameter Updates**
+
+Using the responsibilities from the E-step, the parameters are updated as follows:
+
+#### **Update Component Weights (\( \omega_k \)):**
+
+$$ \omega_k = \frac{\sum_n \gamma_{nk}}{N} $$
+
+Where:
+- \( N \): Total number of observations
+- \( \gamma_{nk} \): Responsibility of component \( k \) for observation \( x_n \)
+
+#### **Update Means (\( \mu_k \)):**
+
+$$ \mu_k = \frac{\sum_n \gamma_{nk} x_n}{\sum_n \gamma_{nk}} $$
+
+Where:
+- \( x_n \): Observation \( n \)
+- \( \gamma_{nk} \): Responsibility of component \( k \) for observation \( x_n \)
+
+#### **Update Variances (\( \sigma_k^2 \)):**
+
+$$ \sigma_k^2 = \frac{\sum_n \gamma_{nk} (x_n - \mu_k)^2}{\sum_n \gamma_{nk}} $$
+
+Where:
+- \( (x_n - \mu_k)^2 \): Squared deviation of observation \( n \) from the mean of component \( k \).
+
+---
+
+### **3. Log-Likelihood Calculation**
+
+The log-likelihood is computed to assess convergence:
+
+$$ \ln L(\omega, \mu, \sigma^2 | x) = \sum_n \ln \left( \sum_k \omega_k f(x_n | \mu_k, \sigma_k^2) \right) $$
+
+Where:
+- \( \ln L \): Log-likelihood of the data given the parameters
+- \( f(x_n | \mu_k, \sigma_k^2) \): Gaussian PDF for component \( k \)
+- \( \omega_k \): Weight of component \( k \)
+
+---
+
+### **Convergence Criterion**
+
+The algorithm stops when the absolute change in log-likelihood between iterations is smaller than a predefined threshold (\( \epsilon \)):
+
+$$ |\ln L_{\text{new}} - \ln L_{\text{old}}| < \epsilon $$
+
+Where:
+- \( \ln L_{\text{new}} \): The log-likelihood in the current iteration
+- \( \ln L_{\text{old}} \): The log-likelihood from the previous iteration
+- \( \epsilon \): Stopping threshold
 
 ---
 
